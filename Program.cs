@@ -72,7 +72,7 @@ namespace DownloadManager
         static void Main(string[] args)
         {
             var handle = NativeMethods.GetConsoleWindow();
-            NativeMethods.ShowWindow(handle, NativeMethods.SW_HIDE); // убрать 
+           // NativeMethods.ShowWindow(handle, NativeMethods.SW_HIDE); // убрать 
             ControlFolders = ReadAllFile(ConfFile);
             string tmp;
             string[] files;
@@ -100,7 +100,8 @@ namespace DownloadManager
                                     movepath = ControlFolders[i] + "\\" + tmp;
                                 }
                                 movepath += "\\" + files[k].Substring(files[k].LastIndexOf("\\")+1);
-                                File.Move(files[k], movepath);
+                                if (File.Exists(movepath)) File.Delete(movepath); 
+                                File.Move(files[k], movepath); 
                             }
                         }
                     }
