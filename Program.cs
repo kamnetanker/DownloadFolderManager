@@ -72,7 +72,7 @@ namespace DownloadManager
         static void Main(string[] args)
         {
             var handle = NativeMethods.GetConsoleWindow();
-           // NativeMethods.ShowWindow(handle, NativeMethods.SW_HIDE); // убрать 
+            NativeMethods.ShowWindow(handle, NativeMethods.SW_HIDE); // убрать 
             ControlFolders = ReadAllFile(ConfFile);
             string tmp;
             string[] files;
@@ -89,19 +89,22 @@ namespace DownloadManager
                             if (files[k] != "Error. Incorrect Data.")
                             {
                                 tmp = files[k].Substring(files[k].LastIndexOf(".") + 1);
-
-                                if ((ControlFolders[i])[ControlFolders[i].Length - 1] == '\\'|| (ControlFolders[i])[ControlFolders[i].Length - 1]=='/') { 
-                                Directory.CreateDirectory(ControlFolders[i] + tmp);
-                                    movepath = ControlFolders[i] + tmp;
-                                }
-                                else
+                                if (!tmp.Contains("download"))
                                 {
-                                    Directory.CreateDirectory(ControlFolders[i] +"\\"+ tmp);
-                                    movepath = ControlFolders[i] + "\\" + tmp;
+                                    if ((ControlFolders[i])[ControlFolders[i].Length - 1] == '\\' || (ControlFolders[i])[ControlFolders[i].Length - 1] == '/')
+                                    {
+                                        Directory.CreateDirectory(ControlFolders[i] + tmp);
+                                        movepath = ControlFolders[i] + tmp;
+                                    }
+                                    else
+                                    {
+                                        Directory.CreateDirectory(ControlFolders[i] + "\\" + tmp);
+                                        movepath = ControlFolders[i] + "\\" + tmp;
+                                    }
+                                    movepath += "\\" + files[k].Substring(files[k].LastIndexOf("\\") + 1);
+                                    if (File.Exists(movepath)) File.Delete(movepath);
+                                    File.Move(files[k], movepath);
                                 }
-                                movepath += "\\" + files[k].Substring(files[k].LastIndexOf("\\")+1);
-                                if (File.Exists(movepath)) File.Delete(movepath); 
-                                File.Move(files[k], movepath); 
                             }
                         }
                     }
@@ -110,7 +113,7 @@ namespace DownloadManager
                         Console.WriteLine(ex.Message); 
                     }
                 }
-                Thread.Sleep(3600);
+                Thread.Sleep(60000);
             }
         }
     }
